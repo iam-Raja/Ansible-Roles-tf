@@ -1,0 +1,4 @@
+login_user: root
+password : ExpenseApp@1
+host : db-prod.rajapeta.cloud
+DB_HOST: db-prod.rajapeta.cloud

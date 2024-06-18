@@ -1,0 +1,33 @@
+- name: install nginx
+  dnf:
+    name: nginx
+    state: installed #latest or installed both are same
+
+# - name: start & enable nginx
+#   service:
+#     name: nginx
+#     state: started
+#     enabled: yes
+
+- name : run app-requisities
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: app-pre-req
+
+#if there is change in config, system restart is required
+
+- name: Copy a expenxe.conf file on the remote machine
+  ansible.builtin.template:
+    src: expense.conf.j2
+    dest: /etc/nginx/default.d/expense.conf
+  notify:
+  - restart nginx 
+
+
+- name: Restart nginx 
+  service:
+    name: nginx
+    state: restarted
+    enabled: true
+
+    

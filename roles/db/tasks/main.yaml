@@ -1,0 +1,35 @@
+- name: install mysql
+  dnf:
+    name: mysql-server
+    state: latest
+- name: start mysql
+  service:
+    name: mysqld
+    state: started
+    enabled: yes   
+- name: install mysql dependcies
+  ansible.builtin.pip:
+      name:
+      - PyMySQL
+      - cryptography
+      executable: pip3.9  # pip3.11 if python version is 3.11
+
+- name: connection check & setup mysql cred
+  community.mysql.mysql_info:
+    login_user: root
+    login_password: "{{ password }}"
+    login_host: "{{ host }}"
+    filter: version 
+  ignore_errors: yes # to ignore errors
+  register: mysqlsetupresult # take output from last excution
+
+- name: display error result
+  debug:
+    msg: "errors while setup of mysql {{mysqlsetupresult}}"  
+
+- name: setting settimg mysqlpwd via cmd
+  command: "mysql_secure_installation --set-root-pass {{ password }}"
+  when: mysqlsetupresult.failed is true # don't give {{ }} in when condition
+
+
+

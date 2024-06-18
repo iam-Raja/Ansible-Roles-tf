@@ -1,0 +1,59 @@
+- name: disable nodejs
+  ansible.builtin.command: dnf module disable nodejs -y
+- name: enable nodejs
+  ansible.builtin.command: dnf module enable nodejs:20 -y
+  
+- name: install nodejs
+  dnf:
+    name: "{{ item }}"
+    state: installed
+  loop:
+  - nodejs
+  - mysql
+
+- name: create user expense
+  ansible.builtin.user:  
+    name: expense
+
+- name: run app-requisities
+  ansible.builtin.import_role:
+    name: common
+    tasks_from: app-pre-req
+
+- name: downloading dependicies & change dir(with 'args' keyword)
+  ansible.builtin.command: npm install
+  args:
+    chdir: /app
+
+- name: Copy file with owner and permissions
+  ansible.builtin.template:
+    src: backend.service.j2
+    dest: /etc/systemd/system/backend.service
+
+- name: install mysql dependcies
+  ansible.builtin.pip:
+      name:
+      - PyMySQL
+      - cryptography
+      executable: pip3.9  # pip3.11 if python version is 3.11
+
+- name: connection check & setup mysql cred
+  community.mysql.mysql_db:
+    login_user: "{{ login_user }}"
+    login_password: "{{ password }}"
+    login_host: "{{ host }}"    
+    target: /app/schema/backend.sql
+    state: import
+    name: all
+
+- name: demon-reload
+  ansible.builtin.systemd_service:
+    daemon_reload: true
+    
+- name: start&enable backend
+  service:
+    name: backend
+    state: started
+    enabled: yes
+
+

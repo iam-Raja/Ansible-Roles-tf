@@ -1,0 +1,12 @@
+- name: configure db server
+  hosts: db
+  vars_files:
+  - credentials.yaml
+  become: yes
+  roles: 
+  - db
+
+# As password is configred with valut, we have give password to ansible to decrypt and procced further.
+# cmd : ansible-playbook db.yaml --ask-vault-pass
+# passsword: Raja@9676
+# To create vault password cmd: ansible-vault create <file-name> , later remove file from remote ansible server and keep it in local and pass with vars_files
