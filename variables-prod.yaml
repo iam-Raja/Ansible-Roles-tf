@@ -2,3 +2,4 @@ login_user: root
 password : ExpenseApp1
 host : db-prod.rajapeta.cloud
 DB_HOST: db-prod.rajapeta.cloud
+BACKEND_API_URL : backend.app-prod.rajapeta.cloud

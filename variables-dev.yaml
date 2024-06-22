@@ -2,3 +2,4 @@ login_user: root
 password : Rajapetacloud
 host : db-dev.rajapeta.cloud
 DB_HOST: db-dev.rajapeta.cloud
+BACKEND_API_URL : backend.app-dev.rajapeta.cloud
